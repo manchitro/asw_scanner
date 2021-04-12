@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:asw_scanner/network_utils/api.dart';
@@ -41,18 +42,12 @@ class _LoginState extends State<Login> {
     setState(() {
       _isLoading = true;
     });
-    var data = {'uid': uid, 'password': password};
 
-    var res = await Network().authData(data, '/api/login');
-    var body = json.decode(res.body);
-    if (body['success']) {
-      SharedPreferences localStorage = await SharedPreferences.getInstance();
-      localStorage.setString('token', json.encode(body['token']));
-      localStorage.setString('user', json.encode(body['user']));
-      Navigator.pushReplacementNamed(context, '/dashboard');
-    } else {
-      _showMsg(body['message']);
-    }
+    // print(uid);
+    // SharedPreferences localStorage = await SharedPreferences.getInstance();
+    // localStorage.setString('uid', uid);
+    Navigator.pushReplacementNamed(context, '/loginweb',
+        arguments: {'uid': uid});
 
     setState(() {
       _isLoading = false;
@@ -97,8 +92,8 @@ class _LoginState extends State<Login> {
                         Text('Login',
                             style: TextStyle(
                                 fontSize: 35, color: Colors.blueAccent[200])),
-                        SizedBox(width: 10),
-                        Text('with your VUES ID and password',
+                        SizedBox(width: 9),
+                        Text('enter you VUES ID to continue',
                             style: TextStyle(color: Colors.grey[200]))
                       ],
                     ),
@@ -138,78 +133,9 @@ class _LoginState extends State<Login> {
                                   return null;
                                 },
                               ),
-                              Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 20),
-                                child: Divider(color: Colors.grey[500]),
-                              ),
-                              TextFormField(
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: 17),
-                                cursorColor: Color(0xFF9b9b9b),
-                                keyboardType: TextInputType.text,
-                                obscureText: true,
-                                decoration: InputDecoration(
-                                  labelText: 'Password',
-                                  labelStyle: TextStyle(
-                                      color: Colors.white, fontSize: 15),
-                                  prefixIcon: Icon(
-                                    Icons.vpn_key,
-                                    color: Colors.blueAccent[200],
-                                  ),
-                                ),
-                                validator: (passwordValue) {
-                                  if (passwordValue.isEmpty) {
-                                    return 'Please enter your password';
-                                  }
-                                  password = passwordValue;
-                                  return null;
-                                },
-                              ),
                               Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment: MainAxisAlignment.end,
                                 children: <Widget>[
-                                  OutlinedButton(
-                                    child: Text('Forgot your password?',
-                                        style: TextStyle(
-                                            color: Colors.blueAccent[200],
-                                            // fontStyle: FontStyle.italic,
-                                            fontSize: 15)),
-                                    onPressed: () {
-                                      showDialog(
-                                        context: context,
-                                        barrierDismissible: true,
-                                        builder: (BuildContext context) =>
-                                            AlertDialog(
-                                          title: Text('Forgot Password?',
-                                              style: TextStyle(
-                                                  color: Colors.white)),
-                                          content: Text(
-                                              'To reset your VUES password, you need to visit AIUB Portal',
-                                              style: TextStyle(
-                                                  color: Colors.white)),
-                                          actions: [
-                                            TextButton(
-                                              child: Text('Visit Portal'),
-                                              onPressed: () {
-                                                _launchURL();
-                                              },
-                                            ),
-                                            TextButton(
-                                              child: Text('Okay'),
-                                              onPressed: () {
-                                                Navigator.of(context,
-                                                        rootNavigator: true)
-                                                    .pop("Discard");
-                                              },
-                                            )
-                                          ],
-                                          backgroundColor: Colors.grey[900],
-                                        ),
-                                      );
-                                    },
-                                  ),
                                   Padding(
                                     padding: const EdgeInsets.all(10.0),
                                     child: TextButton(
@@ -219,7 +145,7 @@ class _LoginState extends State<Login> {
                                           child: _isLoading
                                               ? SpinKitFadingCircle(
                                                   size: 22, color: Colors.white)
-                                              : Text('Login',
+                                              : Text('Continue',
                                                   style: TextStyle(
                                                       color: Colors.white,
                                                       fontSize: 17))),
@@ -241,7 +167,7 @@ class _LoginState extends State<Login> {
                   ),
                 ],
               ),
-            ))
+            )),
           ]),
         ));
   }

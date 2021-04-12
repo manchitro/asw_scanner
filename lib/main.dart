@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:asw_scanner/pages/loading.dart';
 import 'package:asw_scanner/pages/login.dart';
+import 'package:asw_scanner/pages/loginWeb.dart';
 
 void main() {
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
@@ -15,6 +16,7 @@ void main() {
     routes: {
       '/': (context) => Loading(),
       '/login': (context) => Login(),
+      '/loginweb': (context) => LoginWeb(),
       // '/dashboard': (context) => Dashboard(),
       // '/scanner': (context) => Scanner(),
     },
