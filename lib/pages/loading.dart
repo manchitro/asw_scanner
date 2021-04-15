@@ -9,11 +9,14 @@ class Loading extends StatefulWidget {
 
 class _LoadingState extends State<Loading> {
   bool isAuth = false;
+  String fullName = "";
+  String studentId = "";
 
   void _checkIfLoggedIn() async {
     SharedPreferences localStorage = await SharedPreferences.getInstance();
-    var token = localStorage.getString('token');
-    if (token != null) {
+    studentId = localStorage.getString('studentId');
+    fullName = localStorage.getString('fullName');
+    if (studentId != null && fullName != null) {
       setState(() {
         isAuth = true;
       });
@@ -27,7 +30,10 @@ class _LoadingState extends State<Loading> {
 
     Future.delayed(Duration(milliseconds: 2000), () {
       if (isAuth) {
-        Navigator.pushReplacementNamed(context, '/dashboard');
+        Navigator.pushReplacementNamed(context, '/dashboard', arguments:{
+          'studentId': studentId,
+          'fullName': fullName,
+        });
       } else {
         Navigator.pushReplacementNamed(context, '/login');
       }

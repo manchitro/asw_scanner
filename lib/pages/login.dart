@@ -43,9 +43,6 @@ class _LoginState extends State<Login> {
       _isLoading = true;
     });
 
-    // print(uid);
-    // SharedPreferences localStorage = await SharedPreferences.getInstance();
-    // localStorage.setString('uid', uid);
     Navigator.pushReplacementNamed(context, '/loginweb',
         arguments: {'uid': uid});
 

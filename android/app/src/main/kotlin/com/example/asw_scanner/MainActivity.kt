@@ -1,4 +1,4 @@
-package com.example.asw_scanner
+package com.asw.scanner
 
 import io.flutter.embedding.android.FlutterActivity
 
