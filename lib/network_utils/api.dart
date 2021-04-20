@@ -18,10 +18,20 @@ class Network {
     return await http.post(uri, body: jsonEncode(data), headers: _setHeaders());
   }
 
-  getData(apiUrl) async {
+  Future<dynamic> getData(apiUrl) async {
+    print(apiUrl);
     Uri uri = new Uri.http(_url, apiUrl);
-    await _getToken();
-    return await http.get(uri, headers: _setHeaders());
+    // await _getToken();
+    try {
+      var response = await http
+          .get(uri, headers: _setHeaders())
+          .timeout(Duration(seconds: 10))
+          // .then(print);
+          .catchError(print);
+      return response.body;
+    } catch (e) {
+      print(e);
+    }
   }
 
   _setHeaders() => {
