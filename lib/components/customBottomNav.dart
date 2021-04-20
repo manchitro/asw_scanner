@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class CustomBottomNav extends StatefulWidget {
+  final String activePage;
+
+  CustomBottomNav({Key key, @required this.activePage}) : super(key: key);
+
   @override
   _CustomBottomNavState createState() => _CustomBottomNavState();
 }
@@ -14,7 +18,7 @@ class _CustomBottomNavState extends State<CustomBottomNav> {
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text('Logout?'),
-          backgroundColor: Colors.grey[400],
+          backgroundColor: Colors.white,
           content: SingleChildScrollView(
             child: Column(
               children: <Widget>[
@@ -40,7 +44,8 @@ class _CustomBottomNavState extends State<CustomBottomNav> {
                 SharedPreferences preferences =
                     await SharedPreferences.getInstance();
                 await preferences.clear();
-                Navigator.pushNamedAndRemoveUntil(context, '/login', (_) => false);
+                Navigator.pushNamedAndRemoveUntil(
+                    context, '/login', (_) => false);
               },
             ),
           ],
@@ -85,6 +90,13 @@ class _CustomBottomNavState extends State<CustomBottomNav> {
                     InkWell(
                       onTap: () {
                         print('home');
+                        // Navigator.pushNamedAndRemoveUntil(controller, '/')
+                        Navigator.pushNamedAndRemoveUntil(
+                          context,
+                          '/dashboard',
+                          (_) => false,
+                          arguments: {'activePage': 'dashboard'},
+                        );
                       },
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
@@ -97,13 +109,25 @@ class _CustomBottomNavState extends State<CustomBottomNav> {
                               style: TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.bold,
-                              ))
+                              )),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 2),
+                            child: Container(
+                              height: widget.activePage == 'dashboard' ? 2 : 0,
+                              // width: size.width * .1,
+                              width: 30,
+                              color: Colors.white,
+                            ),
+                          )
                         ],
                       ),
                     ),
                     InkWell(
                       onTap: () {
                         print('History');
+                        Navigator.pushNamedAndRemoveUntil(
+                            context, '/history', (_) => false,
+                            arguments: {'activePage': 'history'});
                       },
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
@@ -116,7 +140,16 @@ class _CustomBottomNavState extends State<CustomBottomNav> {
                               style: TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.bold,
-                              ))
+                              )),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 2),
+                            child: Container(
+                              height: widget.activePage == 'history' ? 2 : 0,
+                              // width: size.width * .1,
+                              width: 30,
+                              color: Colors.white,
+                            ),
+                          )
                         ],
                       ),
                     ),
@@ -126,6 +159,12 @@ class _CustomBottomNavState extends State<CustomBottomNav> {
                     InkWell(
                       onTap: () {
                         print('Profile');
+                        Navigator.pushNamedAndRemoveUntil(
+                          context,
+                          '/profile',
+                          (_) => false,
+                          arguments: {'activePage': 'profile'},
+                        );
                       },
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
@@ -138,7 +177,16 @@ class _CustomBottomNavState extends State<CustomBottomNav> {
                               style: TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.bold,
-                              ))
+                              )),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 2),
+                            child: Container(
+                              height: widget.activePage == 'profile' ? 2 : 0,
+                              // width: size.width * .1,
+                              width: 30,
+                              color: Colors.white,
+                            ),
+                          )
                         ],
                       ),
                     ),

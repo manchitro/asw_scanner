@@ -33,6 +33,7 @@ class _LoadingState extends State<Loading> {
         Navigator.pushReplacementNamed(context, '/dashboard', arguments:{
           'studentId': studentId,
           'fullName': fullName,
+          'activePage': 'dashboard'
         });
       } else {
         Navigator.pushReplacementNamed(context, '/login');

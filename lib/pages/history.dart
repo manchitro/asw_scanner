@@ -1,24 +1,24 @@
 import 'package:asw_scanner/components/customBottomNav.dart';
 import 'package:flutter/material.dart';
 
-class Dashboard extends StatefulWidget {
+class History extends StatefulWidget {
+  History({Key key}) : super(key: key);
+
   @override
-  _DashboardState createState() => _DashboardState();
+  _HistoryState createState() => _HistoryState();
 }
 
-class _DashboardState extends State<Dashboard> {
+class _HistoryState extends State<History> {
   Map data = {};
-
   @override
   Widget build(BuildContext context) {
-    //context data
     data = ModalRoute.of(context).settings.arguments;
     print(data);
 
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
-        title: Text('Dashboard'),
+        title: Text('History'),
         centerTitle: true,
         backgroundColor: Colors.blueAccent,
       ),
@@ -34,7 +34,7 @@ class _DashboardState extends State<Dashboard> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   textBaseline: TextBaseline.ideographic,
                   children: <Widget>[
-                    Text('Home', style: TextStyle(color: Colors.white))
+                    Text('History', style: TextStyle(color: Colors.white))
                   ],
                 ),
               ),

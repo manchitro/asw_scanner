@@ -1,9 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
-import 'package:intl/intl.dart';
 
 class LoginWeb extends StatefulWidget {
   @override
@@ -15,40 +13,12 @@ class _LoginWebState extends State<LoginWeb> {
 
   String message = "";
 
-  bool _isLoading = false;
-  final _formKey = GlobalKey<FormState>();
   var uid;
   var password;
-  final _scaffoldKey = GlobalKey<ScaffoldState>();
-
-  _showMsg(msg) {
-    final snackBar = SnackBar(
-      content: Text(msg),
-      action: SnackBarAction(
-        label: 'Close',
-        onPressed: () {
-          // Some code to undo the change!
-        },
-      ),
-    );
-    _scaffoldKey.currentState.showSnackBar(snackBar);
-  }
 
   @override
   void initState() {
     super.initState();
-  }
-
-  void _login() async {
-    setState(() {
-      _isLoading = true;
-    });
-
-    loginWebview(uid, password);
-
-    setState(() {
-      _isLoading = false;
-    });
   }
 
   void loginWebview(String username, String password) {
@@ -60,15 +30,6 @@ class _LoginWebState extends State<LoginWeb> {
             password +
             '";' +
             'document.getElementById("loginForm").submit();');
-  }
-
-  _launchURL() async {
-    const url = 'https://portal.aiub.edu/ForgotPassword';
-    if (await canLaunch(url)) {
-      await launch(url);
-    } else {
-      throw 'Could not launch $url';
-    }
   }
 
   gotoProfile() async {
@@ -99,7 +60,8 @@ class _LoginWebState extends State<LoginWeb> {
       Navigator.pushReplacementNamed(context, '/dashboard', arguments: {
         'fullName': fullName,
         'studentId': studentId,
-        'lastLogin': now
+        'lastLogin': now,
+        'activePage': 'dashboard'
       });
     }
     // print(html);
