@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:asw_scanner/network_utils/api.dart';
 
 class Login extends StatefulWidget {
   @override
@@ -13,6 +14,10 @@ class _LoginState extends State<Login> {
   var uid;
   var password;
 
+  String message = "";
+
+  Network api = new Network();
+
   @override
   void initState() {
     super.initState();
@@ -22,6 +27,20 @@ class _LoginState extends State<Login> {
     setState(() {
       _isLoading = true;
     });
+
+    // var response = await api.authData({
+    //   'academicid': uid,
+    // }, 'api/v1/student/login');
+    // print(response);
+    // if (response == null) {
+    //   setState(() {
+    //     message = "Could not connect to ASW Server";
+    //   });
+    // } else {
+    //   setState(() {
+    //     message = response;
+    //   });
+    // }
 
     Navigator.pushReplacementNamed(context, '/loginweb',
         arguments: {'uid': uid});
@@ -61,7 +80,7 @@ class _LoginState extends State<Login> {
                             style: TextStyle(
                                 fontSize: 35, color: Colors.blueAccent[200])),
                         SizedBox(width: 9),
-                        Text('enter you VUES ID to continue',
+                        Text('enter your VUES ID to continue',
                             style: TextStyle(color: Colors.grey[200]))
                       ],
                     ),
@@ -101,6 +120,34 @@ class _LoginState extends State<Login> {
                                   return null;
                                 },
                               ),
+                              // Padding(
+                              //   padding:
+                              //       const EdgeInsets.symmetric(horizontal: 20),
+                              //   child: Divider(color: Colors.grey[500]),
+                              // ),
+                              // TextFormField(
+                              //   style: TextStyle(
+                              //       color: Colors.white, fontSize: 17),
+                              //   cursorColor: Color(0xFF9b9b9b),
+                              //   keyboardType: TextInputType.text,
+                              //   obscureText: true,
+                              //   decoration: InputDecoration(
+                              //     labelText: 'Password',
+                              //     labelStyle: TextStyle(
+                              //         color: Colors.white, fontSize: 15),
+                              //     prefixIcon: Icon(
+                              //       Icons.vpn_key,
+                              //       color: Colors.blueAccent[200],
+                              //     ),
+                              //   ),
+                              //   validator: (passwordValue) {
+                              //     if (passwordValue.isEmpty) {
+                              //       return 'Please enter your password';
+                              //     }
+                              //     password = passwordValue;
+                              //     return null;
+                              //   },
+                              // ),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: <Widget>[
@@ -133,6 +180,9 @@ class _LoginState extends State<Login> {
                               ),
                             ])),
                   ),
+                  Container(
+                      margin: EdgeInsets.only(top: 20),
+                      child: Text(message, style: TextStyle(color: Colors.red)))
                 ],
               ),
             )),

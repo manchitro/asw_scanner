@@ -57,6 +57,7 @@ class _LoginWebState extends State<LoginWeb> {
       var now = DateTime.now().toString();
       localStorage.setString('lastLogin', now);
       _controller.clearCache();
+      print("put studentId: " + localStorage.getString('studentId'));
       Navigator.pushReplacementNamed(context, '/dashboard', arguments: {
         'fullName': fullName,
         'studentId': studentId,
