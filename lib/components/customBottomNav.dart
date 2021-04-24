@@ -72,7 +72,9 @@ class _CustomBottomNavState extends State<CustomBottomNav> {
             Center(
               heightFactor: 0.6,
               child: FloatingActionButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.pushNamed(context, '/scanner');
+                },
                 backgroundColor: Colors.blueAccent,
                 child: Icon(
                   Icons.qr_code_scanner,

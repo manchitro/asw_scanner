@@ -15,6 +15,11 @@ class _DashboardState extends State<Dashboard> {
   Network api = new Network();
 
   @override
+  void initState() { 
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     //context data
     data = ModalRoute.of(context).settings.arguments;
@@ -56,17 +61,18 @@ class _DashboardState extends State<Dashboard> {
                 ),
               ),
               Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                ),
                 child: FutureBuilder(
                   // future: get(Uri.https(
                   //     'jsonplaceholder.typicode.com', 'todos/1')),
                   future: api.authData({}, 'api/v1/student/sections'),
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.done) {
-                      if (snapshot.hasError) {
-                        return Text('error');
-                      }
+                      // if (snapshot.hasError) {
+                      //   return Text('error');
+                      // }
                       if (snapshot.data == null) {
                         return Text('Could not connect to server',
                             style: TextStyle(color: Colors.white));
@@ -81,7 +87,7 @@ class _DashboardState extends State<Dashboard> {
                               children: [
                                 Text(
                                     data['sections'].length > 0
-                                        ? 'You are enrolled in these sections. If you don\'t see a section that you should be in, please contact you faculty'
+                                        ? 'You are enrolled in these sections. If you don\'t see a section that you should be in, please contact your faculty'
                                         : 'You are not enrolled in any sections currently. If you think there is a mistake, please contact your faculty',
                                     style: TextStyle(color: Colors.white)),
                                 ListView.builder(
@@ -133,6 +139,10 @@ class _DashboardState extends State<Dashboard> {
                                     }),
                               ],
                             );
+                          } else {
+                            return Center(
+                                child: Text('Something went wrong.',
+                                    style: TextStyle(color: Colors.white)));
                           }
                         } else {
                           if (data['message'] != null) {

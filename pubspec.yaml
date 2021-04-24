@@ -36,6 +36,7 @@ dependencies:
     intl: ^0.17.0
     flutter_icons: ^1.1.0
     icon_shadow: ^1.0.1
+    qr_code_scanner: ^0.4.0
 
 dev_dependencies:
     flutter_test:
