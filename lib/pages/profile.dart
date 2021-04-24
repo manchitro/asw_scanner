@@ -103,6 +103,7 @@ class _ProfileState extends State<Profile> {
                                               fontSize: 20),
                                           cursorColor: Color(0xFF9b9b9b),
                                           keyboardType: TextInputType.text,
+                                          readOnly: true,
                                           decoration: InputDecoration(
                                             labelText: 'First Name',
                                             labelStyle: TextStyle(
@@ -127,6 +128,7 @@ class _ProfileState extends State<Profile> {
                                               fontSize: 20),
                                           cursorColor: Color(0xFF9b9b9b),
                                           keyboardType: TextInputType.text,
+                                          readOnly: true,
                                           decoration: InputDecoration(
                                             labelText: 'Last Name',
                                             labelStyle: TextStyle(

@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +14,7 @@ class _ScannerState extends State<Scanner> {
   Barcode result;
   QRViewController controller;
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
+  Codec<String, String> stringToBase64 = utf8.fuse(base64);
 
   // In order to get hot reload to work we need to pause the camera if the platform
   // is android, or resume the camera if the platform is iOS.
@@ -40,7 +42,7 @@ class _ScannerState extends State<Scanner> {
                 children: <Widget>[
                   if (result != null)
                     Text(
-                        'Barcode Type: ${describeEnum(result.format)}   Data: ${result.code}')
+                        'Barcode Type: ${describeEnum(result.format)}   Data: ${stringToBase64.decode(result.code)}')
                   else
                     Text('Scan a code'),
                   Row(

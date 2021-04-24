@@ -1,9 +1,11 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Network {
-  final String _url = '192.168.31.114:8000';
+  final String _url = '192.168.31.144:8000';
+  Dio dio = new Dio();
   //if you are using android studio emulator, change localhost to 10.0.2.2
   var token;
   var studentId;
@@ -19,7 +21,7 @@ class Network {
     print(studentId);
   }
 
-  authData(data, apiUrl) async {
+  Future<dynamic> authData(data, apiUrl) async {
     Uri uri = new Uri.http(_url, apiUrl);
     await _getStudentId();
     data['academicid'] = studentId;
