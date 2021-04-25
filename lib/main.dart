@@ -25,7 +25,6 @@ void main() {
       '/history': (context) => History(),
       '/profile': (context) => Profile(),
       '/scanner': (context) => Scanner(),
-      // '/scanner': (context) => Scanner(),
     },
   ));
 }

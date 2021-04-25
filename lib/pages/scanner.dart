@@ -15,6 +15,8 @@ class _ScannerState extends State<Scanner> {
   QRViewController controller;
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
   Codec<String, String> stringToBase64 = utf8.fuse(base64);
+  bool flashOn = false;
+  bool frontCam = false;
 
   // In order to get hot reload to work we need to pause the camera if the platform
   // is android, or resume the camera if the platform is iOS.
@@ -30,9 +32,15 @@ class _ScannerState extends State<Scanner> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.black,
+      appBar: AppBar(
+        title: Text("Scanner"),
+        centerTitle: true,
+        backgroundColor: Colors.blueAccent,
+      ),
       body: Column(
         children: <Widget>[
-          Expanded(flex: 4, child: _buildQrView(context)),
+          Expanded(flex: 10, child: _buildQrView(context)),
           Expanded(
             flex: 1,
             child: FittedBox(
@@ -40,70 +48,38 @@ class _ScannerState extends State<Scanner> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
-                  if (result != null)
-                    Text(
-                        'Barcode Type: ${describeEnum(result.format)}   Data: ${stringToBase64.decode(result.code)}')
-                  else
-                    Text('Scan a code'),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: <Widget>[
                       Container(
                         margin: EdgeInsets.all(8),
-                        child: ElevatedButton(
-                            onPressed: () async {
-                              await controller?.toggleFlash();
-                              setState(() {});
-                            },
-                            child: FutureBuilder(
-                              future: controller?.getFlashStatus(),
-                              builder: (context, snapshot) {
-                                return Text('Flash: ${snapshot.data}');
-                              },
-                            )),
-                      ),
-                      Container(
-                        margin: EdgeInsets.all(8),
-                        child: ElevatedButton(
-                            onPressed: () async {
-                              await controller?.flipCamera();
-                              setState(() {});
-                            },
-                            child: FutureBuilder(
-                              future: controller?.getCameraInfo(),
-                              builder: (context, snapshot) {
-                                if (snapshot.data != null) {
-                                  return Text(
-                                      'Camera facing ${describeEnum(snapshot.data)}');
-                                } else {
-                                  return Text('loading');
-                                }
-                              },
-                            )),
-                      )
-                    ],
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      Container(
-                        margin: EdgeInsets.all(8),
-                        child: ElevatedButton(
+                        child: IconButton(
                           onPressed: () async {
-                            await controller?.pauseCamera();
+                            await controller?.toggleFlash();
+                            setState(() {
+                              flashOn = !flashOn;
+                            });
                           },
-                          child: Text('pause', style: TextStyle(fontSize: 20)),
+                          color: Colors.blueAccent,
+                          icon: flashOn
+                              ? Icon(Icons.flash_on)
+                              : Icon(Icons.flash_off),
                         ),
                       ),
                       Container(
                         margin: EdgeInsets.all(8),
-                        child: ElevatedButton(
+                        child: IconButton(
                           onPressed: () async {
-                            await controller?.resumeCamera();
+                            await controller?.flipCamera();
+                            setState(() {
+                              frontCam = !frontCam;
+                            });
                           },
-                          child: Text('resume', style: TextStyle(fontSize: 20)),
+                          color: Colors.blueAccent,
+                          icon: frontCam
+                              ? Icon(Icons.camera_front_rounded)
+                              : Icon(Icons.camera_rear_rounded),
                         ),
                       )
                     ],

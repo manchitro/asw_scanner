@@ -161,46 +161,6 @@ class _ProfileState extends State<Profile> {
                                           ),
                                           readOnly: true,
                                         ),
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.end,
-                                          children: <Widget>[
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      horizontal: 10.0,
-                                                      vertical: 20),
-                                              child: TextButton(
-                                                child: Padding(
-                                                    padding:
-                                                        EdgeInsets.symmetric(
-                                                            vertical: 5,
-                                                            horizontal: 10),
-                                                    child: _isLoading
-                                                        ? SpinKitFadingCircle(
-                                                            size: 22,
-                                                            color: Colors.white)
-                                                        : Text('Save',
-                                                            style: TextStyle(
-                                                                color: Colors
-                                                                    .white,
-                                                                fontSize: 17))),
-                                                onPressed: () {
-                                                  if (_formKey.currentState
-                                                      .validate()) {
-                                                    print('form submitted');
-                                                  }
-                                                },
-                                                style: ButtonStyle(
-                                                  backgroundColor:
-                                                      MaterialStateProperty.all<
-                                                              Color>(
-                                                          Colors.blueAccent),
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
                                       ])),
                             ),
                           );
@@ -218,10 +178,6 @@ class _ProfileState extends State<Profile> {
                       return Center(
                           child: SpinKitFadingCircle(color: Colors.white));
                     }
-
-                    return Center(
-                        child: Text('Something went wrong.',
-                            style: TextStyle(color: Colors.white)));
                   },
                 ),
               )
