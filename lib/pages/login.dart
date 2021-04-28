@@ -1,7 +1,10 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:asw_scanner/network_utils/api.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Login extends StatefulWidget {
   @override
@@ -13,6 +16,8 @@ class _LoginState extends State<Login> {
   final _formKey = GlobalKey<FormState>();
   var uid;
   var password;
+  String fullName = "";
+  String studentId = "";
 
   String message = "";
 
@@ -28,22 +33,43 @@ class _LoginState extends State<Login> {
       _isLoading = true;
     });
 
-    // var response = await api.authData({
-    //   'academicid': uid,
-    // }, 'api/v1/student/login');
-    // print(response);
-    // if (response == null) {
-    //   setState(() {
-    //     message = "Could not connect to ASW Server";
-    //   });
-    // } else {
-    //   setState(() {
-    //     message = response;
-    //   });
-    // }
+    var response = await api.authData({
+      'academicid': uid,
+      'password': password,
+    }, 'api/v1/student/login');
+    print(response);
+    if (response == null) {
+      setState(() {
+        message = "Could not connect to ASW Server";
+      });
+    } else {
+      var data = json.decode(response);
+      if (data['login'] == true) {
+        setState(() {
+          message = 'Login successful';
+        });
+        SharedPreferences localStorage = await SharedPreferences.getInstance();
+        localStorage.setString('token', data['token']);
+        localStorage.setString('fullName', data['name']);
+        localStorage.setString('studentId', uid);
+        setState(() {
+          fullName = localStorage.getString('fullName');
+          studentId = localStorage.getString('studentId');
+        });
+        Navigator.pushReplacementNamed(context, '/dashboard', arguments:{
+          'studentId': studentId,
+          'fullName': fullName,
+          'activePage': 'dashboard'
+        });
+      } else {
+        setState(() {
+          message = data['error'];
+        });
+      }
+    }
 
-    Navigator.pushReplacementNamed(context, '/loginweb',
-        arguments: {'uid': uid});
+    // Navigator.pushReplacementNamed(context, '/loginweb',
+    //     arguments: {'uid': uid});
 
     setState(() {
       _isLoading = false;
@@ -120,34 +146,34 @@ class _LoginState extends State<Login> {
                                   return null;
                                 },
                               ),
-                              // Padding(
-                              //   padding:
-                              //       const EdgeInsets.symmetric(horizontal: 20),
-                              //   child: Divider(color: Colors.grey[500]),
-                              // ),
-                              // TextFormField(
-                              //   style: TextStyle(
-                              //       color: Colors.white, fontSize: 17),
-                              //   cursorColor: Color(0xFF9b9b9b),
-                              //   keyboardType: TextInputType.text,
-                              //   obscureText: true,
-                              //   decoration: InputDecoration(
-                              //     labelText: 'Password',
-                              //     labelStyle: TextStyle(
-                              //         color: Colors.white, fontSize: 15),
-                              //     prefixIcon: Icon(
-                              //       Icons.vpn_key,
-                              //       color: Colors.blueAccent[200],
-                              //     ),
-                              //   ),
-                              //   validator: (passwordValue) {
-                              //     if (passwordValue.isEmpty) {
-                              //       return 'Please enter your password';
-                              //     }
-                              //     password = passwordValue;
-                              //     return null;
-                              //   },
-                              // ),
+                              Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 20),
+                                child: Divider(color: Colors.grey[500]),
+                              ),
+                              TextFormField(
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 17),
+                                cursorColor: Color(0xFF9b9b9b),
+                                keyboardType: TextInputType.text,
+                                obscureText: true,
+                                decoration: InputDecoration(
+                                  labelText: 'Password',
+                                  labelStyle: TextStyle(
+                                      color: Colors.white, fontSize: 15),
+                                  prefixIcon: Icon(
+                                    Icons.vpn_key,
+                                    color: Colors.blueAccent[200],
+                                  ),
+                                ),
+                                validator: (passwordValue) {
+                                  if (passwordValue.isEmpty) {
+                                    return 'Please enter your password';
+                                  }
+                                  password = passwordValue;
+                                  return null;
+                                },
+                              ),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: <Widget>[
@@ -181,7 +207,8 @@ class _LoginState extends State<Login> {
                             ])),
                   ),
                   Container(
-                      margin: EdgeInsets.only(top: 20),
+                      margin:
+                          EdgeInsets.symmetric(horizontal: 20, vertical: 20),
                       child: Text(message, style: TextStyle(color: Colors.red)))
                 ],
               ),

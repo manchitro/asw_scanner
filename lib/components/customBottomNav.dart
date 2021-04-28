@@ -239,7 +239,7 @@ class BNBCustomPainer extends CustomPainter {
     path.lineTo(size.width, size.height);
     path.lineTo(0, size.height);
     path.close();
-    // canvas.drawShadow(path, Colors.blueAccent, -20, true);
+    canvas.drawShadow(path.shift(Offset(0, -8)), Colors.black, 50, true);
     canvas.drawPath(path, paint);
   }
 
