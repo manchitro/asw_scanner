@@ -86,7 +86,11 @@ class _ScannerState extends State<Scanner> {
                 ],
               ),
             ),
-          )
+          ),
+          // Expanded(
+          //     flex: 1,
+          //     child: Text(result != null ? result.code : '',
+          //         style: TextStyle(color: Colors.white)))
         ],
       ),
     );
@@ -117,9 +121,13 @@ class _ScannerState extends State<Scanner> {
       this.controller = controller;
     });
     controller.scannedDataStream.listen((scanData) {
+      controller.stopCamera();
       setState(() {
         result = scanData;
       });
+
+      Navigator.pushNamedAndRemoveUntil(context, '/scanned', (_) => false,
+          arguments: {'qrcode': result.code, 'scantime': DateTime.now()});
     });
   }
 

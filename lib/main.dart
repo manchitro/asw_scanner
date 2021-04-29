@@ -7,6 +7,7 @@ import 'package:asw_scanner/pages/dashboard.dart';
 import 'package:asw_scanner/pages/history.dart';
 import 'package:asw_scanner/pages/profile.dart';
 import 'package:asw_scanner/pages/scanner.dart';
+import 'package:asw_scanner/pages/scanned.dart';
 
 void main() {
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
@@ -25,6 +26,7 @@ void main() {
       '/history': (context) => History(),
       '/profile': (context) => Profile(),
       '/scanner': (context) => Scanner(),
+      '/scanned': (context) => Scanned(),
     },
   ));
 }
