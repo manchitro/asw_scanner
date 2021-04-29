@@ -56,7 +56,7 @@ class _LoginState extends State<Login> {
           fullName = localStorage.getString('fullName');
           studentId = localStorage.getString('studentId');
         });
-        Navigator.pushReplacementNamed(context, '/dashboard', arguments:{
+        Navigator.pushReplacementNamed(context, '/dashboard', arguments: {
           'studentId': studentId,
           'fullName': fullName,
           'activePage': 'dashboard'
@@ -106,7 +106,7 @@ class _LoginState extends State<Login> {
                             style: TextStyle(
                                 fontSize: 35, color: Colors.blueAccent[200])),
                         SizedBox(width: 9),
-                        Text('enter your VUES ID to continue',
+                        Text('with your VUES ID and Password',
                             style: TextStyle(color: Colors.grey[200]))
                       ],
                     ),
@@ -209,7 +209,16 @@ class _LoginState extends State<Login> {
                   Container(
                       margin:
                           EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-                      child: Text(message, style: TextStyle(color: Colors.red)))
+                      child:
+                          Text(message, style: TextStyle(color: Colors.red))),
+                  Container(
+                      margin:
+                          EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                      child: Text(
+                          message == ""
+                              ? 'You can only login from one device at a time. You\'ll be logged out from any previous devices by logging in here'
+                              : ' ',
+                          style: TextStyle(color: Colors.white)))
                 ],
               ),
             )),

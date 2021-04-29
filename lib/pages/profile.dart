@@ -13,7 +13,6 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
-  bool _isLoading = false;
   Map data = {};
   Network api = new Network();
   final _formKey = GlobalKey<FormState>();
@@ -73,7 +72,7 @@ class _ProfileState extends State<Profile> {
                 child: FutureBuilder(
                   // future: get(Uri.https(
                   //     'jsonplaceholder.typicode.com', 'todos/1')),
-                  future: api.authData({}, 'api/v1/student/profile'),
+                  future: api.getData('api/v1/student/profile'),
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.done) {
                       // if (snapshot.hasError) {
@@ -84,7 +83,7 @@ class _ProfileState extends State<Profile> {
                             style: TextStyle(color: Colors.white));
                       } else {
                         var data = json.decode(snapshot.data);
-                        if (data['success'] == "true") {
+                        if (data['success'] == true) {
                           return Container(
                             child: Card(
                               color: Colors.black,
@@ -96,7 +95,7 @@ class _ProfileState extends State<Profile> {
                                           MainAxisAlignment.center,
                                       children: <Widget>[
                                         TextFormField(
-                                          initialValue: data['student'][0]
+                                          initialValue: data['foundUser']
                                               ['firstname'],
                                           style: TextStyle(
                                               color: Colors.white,
@@ -121,7 +120,7 @@ class _ProfileState extends State<Profile> {
                                           },
                                         ),
                                         TextFormField(
-                                          initialValue: data['student'][0]
+                                          initialValue: data['foundUser']
                                               ['lastname'],
                                           style: TextStyle(
                                               color: Colors.white,
@@ -145,7 +144,7 @@ class _ProfileState extends State<Profile> {
                                           },
                                         ),
                                         TextFormField(
-                                          initialValue: data['student'][0]
+                                          initialValue: data['foundUser']
                                               ['academicid'],
                                           style: TextStyle(
                                               color: Colors.white,
