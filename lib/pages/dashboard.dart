@@ -4,6 +4,8 @@ import 'package:asw_scanner/components/customBottomNav.dart';
 import 'package:flutter/material.dart';
 import 'package:asw_scanner/network_utils/api.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Dashboard extends StatefulWidget {
   @override
@@ -13,10 +15,30 @@ class Dashboard extends StatefulWidget {
 class _DashboardState extends State<Dashboard> {
   Map data = {};
   Network api = new Network();
+  var attendances;
+
+  _getAttendances() async {
+    print('getting attendances');
+    SharedPreferences localStorage = await SharedPreferences.getInstance();
+    if (localStorage.getString('attendances') != null) {
+      var attendanceArray = json.decode(localStorage.getString('attendances'));
+      print('attendance is: ' + attendanceArray.toString());
+      setState(() {
+        attendances = attendanceArray;
+      });
+    } else {
+      print('attendance is null');
+      setState(() {
+        attendances = 0;
+      });
+    }
+  }
 
   @override
   void initState() {
     super.initState();
+
+    _getAttendances();
   }
 
   @override
@@ -61,10 +83,52 @@ class _DashboardState extends State<Dashboard> {
                 ),
               ),
               Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 20,
-                  ),
-                  child: Text('hi', style: TextStyle(color: Colors.white))),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                ),
+                child: attendances == 0
+                    ? Text('You have no Unsubmitted attendances',
+                        style: TextStyle(color: Colors.white))
+                    : ListView.builder(
+                        physics: NeverScrollableScrollPhysics(),
+                        scrollDirection: Axis.vertical,
+                        shrinkWrap: true,
+                        itemCount: attendances.length,
+                        itemBuilder: (context, index) {
+                          print('building attendances list with: ' +
+                              json
+                                  .decode(attendances[index])['lectureid']
+                                  .toString());
+                          var attData = json.decode(attendances[index]);
+                          return ListTile(
+                            tileColor: Colors.blueAccent,
+                            leading: Icon(Icons.check,
+                                color: Colors.white, size: 35),
+                            contentPadding: EdgeInsets.symmetric(
+                                vertical: 10, horizontal: 15),
+                            // isThreeLine: true,
+                            // visualDensity: VisualDensity(horizontal: 2, vertical: 3),
+                            dense: false,
+                            title: Text(attData['qrdata']['sn'].toString(),
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold)),
+                            subtitle: Text(
+                                'Lecture Date: ' +
+                                    attData['qrdata']['date'] +
+                                    '\n' +
+                                    'Scan time: ' +
+                                    DateFormat('hh:mm:ss a').format(
+                                        DateTime.parse(attData['scantime'])),
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 15)),
+                            trailing: Icon(Icons.cloud_upload_rounded,
+                                color: Colors.white),
+                          );
+                        },
+                      ),
+              ),
               Padding(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 20, vertical: 15),

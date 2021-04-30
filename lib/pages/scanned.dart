@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Scanned extends StatefulWidget {
   Scanned({Key key}) : super(key: key);
@@ -16,6 +17,7 @@ class _ScannedState extends State<Scanned> {
   Map qrdata = {};
   DateTime currentBackPressTime;
   Codec<String, String> stringToBase64 = utf8.fuse(base64);
+  String saving = 'Saving..';
 
   Future<bool> onWillPop() {
     DateTime now = DateTime.now();
@@ -28,9 +30,65 @@ class _ScannedState extends State<Scanned> {
     return Future.value(true);
   }
 
+  Future<dynamic> _makeAttendance() async {
+    Map attendance = {};
+    SharedPreferences localStorage = await SharedPreferences.getInstance();
+    attendance['academicid'] = localStorage.getString('studentId');
+    attendance['qrdata'] = qrdata;
+    attendance['scantime'] = data['scantime'].toString();
+    print('returning attendance: ' + json.encode(attendance));
+    return json.encode(attendance);
+  }
+
+  Future<void> _saveAttendance() async {
+    print('init saveattendance');
+    SharedPreferences localStorage = await SharedPreferences.getInstance();
+    var attendances = localStorage.getString('attendances');
+    print('attendances: ' + attendances.toString());
+    if (attendances == null) {
+      var attendanceArray = [];
+      attendanceArray.add(await _makeAttendance());
+      localStorage.setString('attendances', json.encode(attendanceArray));
+      print('saved attendanceArray: ' + localStorage.getString('attendances'));
+      setState(() {
+        saving = 'Saved';
+      });
+    } else {
+      var attendanceArray = json.decode(localStorage.getString('attendances'));
+      print('attendance not null. found: ' + attendanceArray.toString());
+      var currentAttendance = await _makeAttendance();
+      bool found = false;
+      attendanceArray.forEach((attendance) {
+        print('found att: ' + attendance);
+        var decodedAtt = json.decode(attendance);
+        print('decoded att: ' + decodedAtt.toString());
+        print(currentAttendance);
+        if (decodedAtt['qrdata']['lid'].toString() ==
+            json.decode(currentAttendance)['qrdata']['lid'].toString()) {
+          Fluttertoast.showToast(msg: 'Already scanned for this lecture');
+          setState(() {
+            saving = 'Already Saved';
+          });
+          found = true;
+        }
+      });
+      if (!found) {
+        attendanceArray.add(currentAttendance);
+        localStorage.setString('attendances', json.encode(attendanceArray));
+        print(
+            'saved attendanceArray: ' + localStorage.getString('attendances'));
+        setState(() {
+          saving = 'Saved';
+        });
+      }
+    }
+  }
+
   @override
   void initState() {
     super.initState();
+
+    _saveAttendance();
   }
 
   @override
@@ -77,6 +135,7 @@ class _ScannedState extends State<Scanned> {
                         'Scan time: ' +
                         DateFormat('h:m:s a').format(data['scantime']),
                     style: TextStyle(color: Colors.white, fontSize: 15)),
+                trailing: Text(saving, style: TextStyle(color: Colors.white)),
               )
             ],
           ),

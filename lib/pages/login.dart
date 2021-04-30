@@ -111,6 +111,14 @@ class _LoginState extends State<Login> {
                       ],
                     ),
                   ),
+                  Container(
+                      margin:
+                          EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                      child: Text(
+                          message == ""
+                              ? 'You can only login from one device at a time. You\'ll be logged out from any previous devices by logging in here'
+                              : ' ',
+                          style: TextStyle(color: Colors.white))),
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 20),
                     child: Divider(
@@ -211,14 +219,6 @@ class _LoginState extends State<Login> {
                           EdgeInsets.symmetric(horizontal: 20, vertical: 20),
                       child:
                           Text(message, style: TextStyle(color: Colors.red))),
-                  Container(
-                      margin:
-                          EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-                      child: Text(
-                          message == ""
-                              ? 'You can only login from one device at a time. You\'ll be logged out from any previous devices by logging in here'
-                              : ' ',
-                          style: TextStyle(color: Colors.white)))
                 ],
               ),
             )),
