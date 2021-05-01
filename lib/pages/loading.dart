@@ -30,7 +30,7 @@ class _LoadingState extends State<Loading> {
 
     Future.delayed(Duration(milliseconds: 2000), () {
       if (isAuth) {
-        Navigator.pushReplacementNamed(context, '/dashboard', arguments:{
+        Navigator.pushReplacementNamed(context, '/dashboard', arguments: {
           'studentId': studentId,
           'fullName': fullName,
           'activePage': 'dashboard'
@@ -51,14 +51,22 @@ class _LoadingState extends State<Loading> {
         children: <Widget>[
           Expanded(child: SizedBox()),
           Expanded(
-            child: Column(children: <Widget>[
-              Image.asset('assets/favicon.png'),
-              Text('Attendance Scanning Wizard',
-                  style: TextStyle(
-                      color: Colors.white, fontSize: 25, fontFamily: 'Nunito')),
-              SizedBox(height: 20),
-              SpinKitFadingCircle(color: Colors.white, size: 40),
-            ]),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 50),
+              child: Column(children: <Widget>[
+                Image.asset('assets/favicon.png'),
+                FittedBox(
+                  fit: BoxFit.fitWidth,
+                  child: Text('Attendance Scanning Wizard',
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 25,
+                          fontFamily: 'Nunito')),
+                ),
+                SizedBox(height: 20),
+                SpinKitFadingCircle(color: Colors.white, size: 40),
+              ]),
+            ),
           ),
           SizedBox(height: 60),
           Text('ASW Scanner v0.1.0 alpha',

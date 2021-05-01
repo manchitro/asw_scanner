@@ -86,143 +86,160 @@ class _LoginState extends State<Login> {
           centerTitle: true,
           elevation: 0,
         ),
-        body: Container(
-          child: Stack(children: <Widget>[
-            Positioned(
-                child: Padding(
-              padding: EdgeInsets.all(8),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 30,
-                    ),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.baseline,
-                      textBaseline: TextBaseline.ideographic,
-                      children: <Widget>[
-                        Text('Login',
-                            style: TextStyle(
-                                fontSize: 35, color: Colors.blueAccent[200])),
-                        SizedBox(width: 9),
-                        Text('with your VUES ID and Password',
-                            style: TextStyle(color: Colors.grey[200]))
-                      ],
-                    ),
-                  ),
-                  Container(
-                      margin:
-                          EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-                      child: Text(
-                          message == ""
-                              ? 'You can only login from one device at a time. You\'ll be logged out from any previous devices by logging in here'
-                              : ' ',
-                          style: TextStyle(color: Colors.white))),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 20),
-                    child: Divider(
-                      color: Colors.blueAccent,
-                      height: 30,
-                    ),
-                  ),
-                  Card(
-                    color: Colors.black,
-                    margin: EdgeInsets.symmetric(horizontal: 20),
-                    child: Form(
-                        key: _formKey,
-                        child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
+        body: Center(
+          child: SingleChildScrollView(
+            child: Container(
+              child: Stack(children: <Widget>[
+                Positioned(
+                    child: Padding(
+                  padding: EdgeInsets.all(8),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 30,
+                        ),
+                        child: FittedBox(
+                          fit: BoxFit.fitWidth,
+                          alignment: Alignment.topLeft,
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.baseline,
+                            textBaseline: TextBaseline.ideographic,
                             children: <Widget>[
-                              TextFormField(
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: 17),
-                                cursorColor: Color(0xFF9b9b9b),
-                                keyboardType: TextInputType.text,
-                                decoration: InputDecoration(
-                                    labelText: 'VUES ID',
-                                    labelStyle: TextStyle(
-                                        color: Colors.white, fontSize: 15),
-                                    fillColor: Colors.white,
-                                    prefixIcon: Icon(Icons.person,
-                                        color: Colors.blueAccent[200])),
-                                validator: (uidValue) {
-                                  if (uidValue.isEmpty) {
-                                    return 'Please enter VUES ID';
-                                  }
-                                  uid = uidValue;
-                                  return null;
-                                },
-                              ),
-                              Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 20),
-                                child: Divider(color: Colors.grey[500]),
-                              ),
-                              TextFormField(
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: 17),
-                                cursorColor: Color(0xFF9b9b9b),
-                                keyboardType: TextInputType.text,
-                                obscureText: true,
-                                decoration: InputDecoration(
-                                  labelText: 'Password',
-                                  labelStyle: TextStyle(
-                                      color: Colors.white, fontSize: 15),
-                                  prefixIcon: Icon(
-                                    Icons.vpn_key,
-                                    color: Colors.blueAccent[200],
-                                  ),
-                                ),
-                                validator: (passwordValue) {
-                                  if (passwordValue.isEmpty) {
-                                    return 'Please enter your password';
-                                  }
-                                  password = passwordValue;
-                                  return null;
-                                },
-                              ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
+                              Text('Login',
+                                  style: TextStyle(
+                                      fontSize: 35,
+                                      color: Colors.blueAccent[200])),
+                              SizedBox(width: 9),
+                              Text('with your VUES ID and Password',
+                                  style: TextStyle(color: Colors.grey[200]))
+                            ],
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: Container(
+                            margin: EdgeInsets.symmetric(
+                                horizontal: 0, vertical: 20),
+                            child: FittedBox(
+                              fit: BoxFit.contain,
+                              child: Text(
+                                  'You can only login from one device at a time.\nPrevious sessions will be deleted.',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                  )),
+                            )),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 20),
+                        child: Divider(
+                          // color: Colors.blueAccent,
+                          height: 10,
+                        ),
+                      ),
+                      Card(
+                        color: Colors.black,
+                        margin: EdgeInsets.symmetric(horizontal: 20),
+                        child: Form(
+                            key: _formKey,
+                            child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
                                 children: <Widget>[
+                                  TextFormField(
+                                    style: TextStyle(
+                                        color: Colors.white, fontSize: 17),
+                                    cursorColor: Color(0xFF9b9b9b),
+                                    keyboardType: TextInputType.text,
+                                    decoration: InputDecoration(
+                                        labelText: 'VUES ID',
+                                        labelStyle: TextStyle(
+                                            color: Colors.white, fontSize: 15),
+                                        fillColor: Colors.white,
+                                        prefixIcon: Icon(Icons.person,
+                                            color: Colors.blueAccent[200])),
+                                    validator: (uidValue) {
+                                      if (uidValue.isEmpty) {
+                                        return 'Please enter VUES ID';
+                                      }
+                                      uid = uidValue;
+                                      return null;
+                                    },
+                                  ),
                                   Padding(
-                                    padding: const EdgeInsets.all(10.0),
-                                    child: TextButton(
-                                      child: Padding(
-                                          padding: EdgeInsets.symmetric(
-                                              vertical: 5, horizontal: 20),
-                                          child: _isLoading
-                                              ? SpinKitFadingCircle(
-                                                  size: 22, color: Colors.white)
-                                              : Text('Continue',
-                                                  style: TextStyle(
-                                                      color: Colors.white,
-                                                      fontSize: 17))),
-                                      onPressed: () {
-                                        if (_formKey.currentState.validate()) {
-                                          _login();
-                                        }
-                                      },
-                                      style: ButtonStyle(
-                                        backgroundColor:
-                                            MaterialStateProperty.all<Color>(
-                                                Colors.blueAccent),
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 20),
+                                    child: Divider(color: Colors.grey[500]),
+                                  ),
+                                  TextFormField(
+                                    style: TextStyle(
+                                        color: Colors.white, fontSize: 17),
+                                    cursorColor: Color(0xFF9b9b9b),
+                                    keyboardType: TextInputType.text,
+                                    obscureText: true,
+                                    decoration: InputDecoration(
+                                      labelText: 'Password',
+                                      labelStyle: TextStyle(
+                                          color: Colors.white, fontSize: 15),
+                                      prefixIcon: Icon(
+                                        Icons.vpn_key,
+                                        color: Colors.blueAccent[200],
                                       ),
                                     ),
+                                    validator: (passwordValue) {
+                                      if (passwordValue.isEmpty) {
+                                        return 'Please enter your password';
+                                      }
+                                      password = passwordValue;
+                                      return null;
+                                    },
                                   ),
-                                ],
-                              ),
-                            ])),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: <Widget>[
+                                      Padding(
+                                        padding: const EdgeInsets.all(10.0),
+                                        child: TextButton(
+                                          child: Padding(
+                                              padding: EdgeInsets.symmetric(
+                                                  vertical: 5, horizontal: 20),
+                                              child: _isLoading
+                                                  ? SpinKitFadingCircle(
+                                                      size: 22,
+                                                      color: Colors.white)
+                                                  : Text('Continue',
+                                                      style: TextStyle(
+                                                          color: Colors.white,
+                                                          fontSize: 17))),
+                                          onPressed: () {
+                                            if (_formKey.currentState
+                                                .validate()) {
+                                              _login();
+                                            }
+                                          },
+                                          style: ButtonStyle(
+                                            backgroundColor:
+                                                MaterialStateProperty.all<
+                                                    Color>(Colors.blueAccent),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ])),
+                      ),
+                      Container(
+                          margin: EdgeInsets.symmetric(
+                              horizontal: 20, vertical: 20),
+                          child: Text(message,
+                              style: TextStyle(color: Colors.red))),
+                    ],
                   ),
-                  Container(
-                      margin:
-                          EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-                      child:
-                          Text(message, style: TextStyle(color: Colors.red))),
-                ],
-              ),
-            )),
-          ]),
+                )),
+              ]),
+            ),
+          ),
         ));
   }
 }

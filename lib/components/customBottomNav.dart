@@ -23,7 +23,7 @@ class _CustomBottomNavState extends State<CustomBottomNav> {
             child: Column(
               children: <Widget>[
                 Text(
-                    'Are you sure you want to log out? You will need internet connection to log back in!'),
+                    'Are you sure you want to log out? All your unsubmitted attendances will be lost and you will need internet connection to log back in!'),
               ],
             ),
           ),
@@ -245,6 +245,6 @@ class BNBCustomPainer extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) {
-    throw UnimplementedError();
+    return false;
   }
 }

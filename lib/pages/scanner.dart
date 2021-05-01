@@ -120,8 +120,8 @@ class _ScannerState extends State<Scanner> {
     setState(() {
       this.controller = controller;
     });
-    controller.scannedDataStream.listen((scanData) {
-      controller.stopCamera();
+    controller.scannedDataStream.listen((scanData) async {
+      await controller.stopCamera();
 
       Navigator.pushNamedAndRemoveUntil(context, '/scanned', (_) => false,
           arguments: {'qrcode': scanData.code, 'scantime': DateTime.now()});

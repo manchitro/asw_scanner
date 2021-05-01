@@ -4,6 +4,7 @@ import 'package:asw_scanner/components/customBottomNav.dart';
 import 'package:flutter/material.dart';
 import 'package:asw_scanner/network_utils/api.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -29,9 +30,15 @@ class _DashboardState extends State<Dashboard> {
     } else {
       print('attendance is null');
       setState(() {
-        attendances = 0;
+        attendances = null;
       });
     }
+  }
+
+  _autoLogout() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    await preferences.clear();
+    Navigator.pushNamedAndRemoveUntil(context, '/login', (_) => false);
   }
 
   @override
@@ -86,7 +93,7 @@ class _DashboardState extends State<Dashboard> {
                 padding: const EdgeInsets.symmetric(
                   horizontal: 20,
                 ),
-                child: attendances == 0
+                child: attendances == null
                     ? Text('You have no Unsubmitted attendances',
                         style: TextStyle(color: Colors.white))
                     : ListView.builder(
@@ -206,28 +213,35 @@ class _DashboardState extends State<Dashboard> {
                                               style: TextStyle(
                                                   color: Colors.white,
                                                   fontSize: 20)),
-                                          subtitle: Text(
-                                              '[' +
-                                                  sectiontimes[0]['classtype'] +
-                                                  '] ' +
-                                                  ' ' +
-                                                  sectiontimes[0]['starttime'] +
-                                                  ' - ' +
-                                                  sectiontimes[0]['endtime'] +
-                                                  ' at ' +
-                                                  sectiontimes[0]['room'] +
-                                                  '\n' +
-                                                  '[' +
-                                                  sectiontimes[1]['classtype'] +
-                                                  '] ' +
-                                                  ' ' +
-                                                  sectiontimes[1]['starttime'] +
-                                                  ' - ' +
-                                                  sectiontimes[1]['endtime'] +
-                                                  ' at ' +
-                                                  sectiontimes[1]['room'],
-                                              style: TextStyle(
-                                                  color: Colors.white)),
+                                          subtitle: FittedBox(
+                                            fit: BoxFit.fitWidth,
+                                            child: Text(
+                                                '[' +
+                                                    sectiontimes[0]
+                                                        ['classtype'] +
+                                                    '] ' +
+                                                    ' ' +
+                                                    sectiontimes[0]
+                                                        ['starttime'] +
+                                                    ' - ' +
+                                                    sectiontimes[0]['endtime'] +
+                                                    ' at ' +
+                                                    sectiontimes[0]['room'] +
+                                                    '\n' +
+                                                    '[' +
+                                                    sectiontimes[1]
+                                                        ['classtype'] +
+                                                    '] ' +
+                                                    ' ' +
+                                                    sectiontimes[1]
+                                                        ['starttime'] +
+                                                    ' - ' +
+                                                    sectiontimes[1]['endtime'] +
+                                                    ' at ' +
+                                                    sectiontimes[1]['room'],
+                                                style: TextStyle(
+                                                    color: Colors.white)),
+                                          ),
                                         ),
                                       );
                                     }),
@@ -239,7 +253,15 @@ class _DashboardState extends State<Dashboard> {
                                     style: TextStyle(color: Colors.white)));
                           }
                         } else {
-                          return Text(data['error'],
+                          if (data['tokenExpired'] == true) {
+                            Fluttertoast.showToast(
+                                toastLength: Toast.LENGTH_LONG,
+                                msg:
+                                    'Your session has expired. Please login again');
+
+                            _autoLogout();
+                          }
+                          return Text('Error occured: ' + data['error'],
                               style: TextStyle(color: Colors.red));
                         }
                       }

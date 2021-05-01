@@ -16,6 +16,7 @@ class _ScannedState extends State<Scanned> {
   Map data = {};
   Map qrdata = {};
   DateTime currentBackPressTime;
+  bool badqr = false;
   Codec<String, String> stringToBase64 = utf8.fuse(base64);
   String saving = 'Saving..';
 
@@ -84,18 +85,51 @@ class _ScannedState extends State<Scanned> {
     }
   }
 
+  bool _verifyQr() {
+    print('in _verifyQr');
+    try {
+      var encodedqr = data['qrcode'];
+      print('encoded qr: ' + encodedqr);
+      var decodedqr = stringToBase64.decode(encodedqr);
+      print('decoded qr: ' + decodedqr);
+      qrdata = json.decode(decodedqr);
+      print('qrdata: ' + qrdata.toString());
+      print('sn: ' + qrdata['sn']);
+      if (qrdata['sn'] == null ||
+          qrdata['lid'] == null ||
+          qrdata['date'] == null ||
+          qrdata['st'] == null ||
+          qrdata['et'] == null ||
+          qrdata['ct'] == null) {
+        print("badqr bad format");
+        return false;
+      } else {
+        print('good qr: ' + qrdata.toString());
+        return true;
+      }
+    } catch (FormatException) {
+      print("badqr no format: " + data['qrcode'].toString());
+      return false;
+    }
+  }
+
   @override
   void initState() {
     super.initState();
-
-    _saveAttendance();
+    print('initstate');
   }
 
   @override
   Widget build(BuildContext context) {
+    print('build');
     data = ModalRoute.of(context).settings.arguments;
-    qrdata = json.decode(stringToBase64.decode(data['qrcode']));
-    print(data);
+    print('got data: ' + data.toString());
+    print('caling _verifyQr');
+    bool goodqr = _verifyQr();
+
+    if (goodqr && saving == 'Saving..') {
+      _saveAttendance();
+    }
 
     return Scaffold(
       backgroundColor: Colors.black,
@@ -115,28 +149,34 @@ class _ScannedState extends State<Scanned> {
               Text('Attendance scanned for:',
                   style: TextStyle(color: Colors.white, fontSize: 20)),
               SizedBox(height: 20),
-              ListTile(
-                tileColor: Colors.blueAccent,
-                leading: Icon(Icons.check, color: Colors.white, size: 35),
-                contentPadding:
-                    EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-                // isThreeLine: true,
-                // visualDensity: VisualDensity(horizontal: 2, vertical: 3),
-                dense: false,
-                title: Text(qrdata['sn'] + ' - ' + qrdata['ct'].toUpperCase(),
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold)),
-                subtitle: Text(
-                    'Date: ' +
-                        qrdata['date'] +
-                        '\n' +
-                        'Scan time: ' +
-                        DateFormat('h:m:s a').format(data['scantime']),
-                    style: TextStyle(color: Colors.white, fontSize: 15)),
-                trailing: Text(saving, style: TextStyle(color: Colors.white)),
-              )
+              !goodqr
+                  ? Text(
+                      'Could not read QR code for lecture information. This QR code was probably not generated from ASW',
+                      style: TextStyle(color: Colors.white))
+                  : ListTile(
+                      tileColor: Colors.blueAccent,
+                      leading: Icon(Icons.check, color: Colors.white, size: 35),
+                      contentPadding:
+                          EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+                      // isThreeLine: true,
+                      // visualDensity: VisualDensity(horizontal: 2, vertical: 3),
+                      dense: false,
+                      title: Text(
+                          qrdata['sn'] + ' - ' + qrdata['ct'].toUpperCase(),
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold)),
+                      subtitle: Text(
+                          'Date: ' +
+                              qrdata['date'] +
+                              '\n' +
+                              'Scan time: ' +
+                              DateFormat('h:m:s a').format(data['scantime']),
+                          style: TextStyle(color: Colors.white, fontSize: 15)),
+                      trailing:
+                          Text(saving, style: TextStyle(color: Colors.white)),
+                    )
             ],
           ),
         ),
