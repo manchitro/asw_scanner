@@ -30,9 +30,9 @@ class _DashboardState extends State<Dashboard> {
       });
     } else {
       print('attendance is null');
-      setState(() {
-        attendances = null;
-      });
+      //   setState(() {
+      //     attendances = [];
+      //   });
     }
   }
 

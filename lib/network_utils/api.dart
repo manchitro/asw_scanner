@@ -4,9 +4,9 @@ import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Network {
-  // final String _url = 'aswlive.ferdoused.com';
+  final String _url = 'aswlive.ferdoused.com';
   // final String _url = '192.168.43.71:8000';
-  final String _url = '192.168.31.144:8000';
+  // final String _url = '192.168.31.144:8000';
   // final String _url = '192.168.31.114:8000';
   Dio dio = new Dio();
   //if you are using android studio emulator, change localhost to 10.0.2.2
@@ -15,12 +15,16 @@ class Network {
 
   _getToken() async {
     SharedPreferences localStorage = await SharedPreferences.getInstance();
-    token = localStorage.getString('token');
+    if (localStorage.containsKey('token')) {
+      token = localStorage.getString('token');
+    } else {
+      token = "";
+    }
   }
 
   Future<dynamic> authData(data, apiUrl) async {
     // Uri uri = new Uri.https(_url, apiUrl);
-    Uri uri = new Uri.http(_url, apiUrl);
+    Uri uri = new Uri.https(_url, apiUrl);
     print('url: $_url');
     print('URI: $uri');
     print('Data: $data');
@@ -41,7 +45,7 @@ class Network {
   Future<dynamic> getData(apiUrl) async {
     print(apiUrl);
     // Uri uri = new Uri.https(_url, apiUrl);
-    Uri uri = new Uri.http(_url, apiUrl);
+    Uri uri = new Uri.https(_url, apiUrl);
     await _getToken();
     try {
       var response = await http

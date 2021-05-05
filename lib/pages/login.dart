@@ -43,27 +43,34 @@ class _LoginState extends State<Login> {
         message = "Could not connect to ASW Server";
       });
     } else {
-      var data = json.decode(response);
-      if (data['login'] == true) {
+      try {
+        var data = json.decode(response);
+        if (data['login'] == true) {
+          setState(() {
+            message = 'Login successful';
+          });
+          SharedPreferences localStorage =
+              await SharedPreferences.getInstance();
+          localStorage.setString('token', data['token']);
+          localStorage.setString('fullName', data['name']);
+          localStorage.setString('studentId', uid);
+          setState(() {
+            fullName = localStorage.getString('fullName');
+            studentId = localStorage.getString('studentId');
+          });
+          Navigator.pushReplacementNamed(context, '/dashboard', arguments: {
+            'studentId': studentId,
+            'fullName': fullName,
+            'activePage': 'dashboard'
+          });
+        } else {
+          setState(() {
+            message = data['error'];
+          });
+        }
+      } on Exception catch (e) {
         setState(() {
-          message = 'Login successful';
-        });
-        SharedPreferences localStorage = await SharedPreferences.getInstance();
-        localStorage.setString('token', data['token']);
-        localStorage.setString('fullName', data['name']);
-        localStorage.setString('studentId', uid);
-        setState(() {
-          fullName = localStorage.getString('fullName');
-          studentId = localStorage.getString('studentId');
-        });
-        Navigator.pushReplacementNamed(context, '/dashboard', arguments: {
-          'studentId': studentId,
-          'fullName': fullName,
-          'activePage': 'dashboard'
-        });
-      } else {
-        setState(() {
-          message = data['error'];
+          message = e.toString();
         });
       }
     }
