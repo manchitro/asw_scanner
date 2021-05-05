@@ -4,6 +4,7 @@ import 'package:asw_scanner/components/customBottomNav.dart';
 import 'package:flutter/material.dart';
 import 'package:asw_scanner/network_utils/api.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:intl/intl.dart';
 
 class History extends StatefulWidget {
   History({Key key}) : super(key: key);
@@ -30,7 +31,7 @@ class _HistoryState extends State<History> {
       ),
       body: Stack(children: <Widget>[
         (Container(
-          child: Column(
+          child: ListView(
             children: <Widget>[
               Padding(
                 padding:
@@ -76,8 +77,40 @@ class _HistoryState extends State<History> {
                       } else {
                         var data = json.decode(snapshot.data);
                         if (data['success'] == true) {
-                          return Text(data.toString(),
-                              style: TextStyle(color: Colors.white));
+                          return ListView.builder(
+                            physics: NeverScrollableScrollPhysics(),
+                            scrollDirection: Axis.vertical,
+                            shrinkWrap: true,
+                            itemCount: data['attendances'].length,
+                            itemBuilder: (context, index) {
+                              var sectionname = data['attendances'][index]
+                                      ['sectionname']
+                                  .toString();
+                              var scantime = data['attendances'][index]
+                                      ['scantime']
+                                  .toString();
+                              return Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 10),
+                                child: ListTile(
+                                  contentPadding: EdgeInsets.symmetric(
+                                      horizontal: 20, vertical: 10),
+                                  tileColor: Colors.blueAccent,
+                                  leading: Icon(Icons.group,
+                                      color: Colors.white, size: 35),
+                                  title: Text(sectionname,
+                                      style: TextStyle(
+                                          color: Colors.white, fontSize: 20)),
+                                  subtitle: Text(
+                                      'Scanned on: ' +
+                                          DateFormat('dd MMM, hh:mm:ss a')
+                                              .format(DateTime.parse(scantime)),
+                                      style: TextStyle(
+                                          color: Colors.white, fontSize: 17)),
+                                ),
+                              );
+                            },
+                          );
                         } else {
                           if (data['error'] != null) {
                             return Text(data['error'],
@@ -95,6 +128,7 @@ class _HistoryState extends State<History> {
                   },
                 ),
               ),
+              SizedBox(height: 90)
             ],
           ),
         )),

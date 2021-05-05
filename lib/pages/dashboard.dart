@@ -17,7 +17,7 @@ class Dashboard extends StatefulWidget {
 class _DashboardState extends State<Dashboard> {
   Map data = {};
   Network api = new Network();
-  var attendances;
+  var attendances = [];
 
   _getAttendances() async {
     print('getting attendances');
@@ -95,7 +95,8 @@ class _DashboardState extends State<Dashboard> {
                   horizontal: 20,
                 ),
                 child: attendances.length == 0
-                    ? Text('You have no Unsubmitted attendances',
+                    ? Text(
+                        'You have no Unsubmitted attendances\nGo to History to see past submissions',
                         style: TextStyle(color: Colors.white))
                     : ListView.builder(
                         physics: NeverScrollableScrollPhysics(),
