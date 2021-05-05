@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:asw_scanner/components/customBottomNav.dart';
+import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:asw_scanner/network_utils/api.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -93,7 +94,7 @@ class _DashboardState extends State<Dashboard> {
                 padding: const EdgeInsets.symmetric(
                   horizontal: 20,
                 ),
-                child: attendances == null
+                child: attendances.length == 0
                     ? Text('You have no Unsubmitted attendances',
                         style: TextStyle(color: Colors.white))
                     : ListView.builder(
@@ -107,32 +108,7 @@ class _DashboardState extends State<Dashboard> {
                                   .decode(attendances[index])['lectureid']
                                   .toString());
                           var attData = json.decode(attendances[index]);
-                          return ListTile(
-                            tileColor: Colors.blueAccent,
-                            leading: Icon(Icons.check,
-                                color: Colors.white, size: 35),
-                            contentPadding: EdgeInsets.symmetric(
-                                vertical: 10, horizontal: 15),
-                            // isThreeLine: true,
-                            // visualDensity: VisualDensity(horizontal: 2, vertical: 3),
-                            dense: false,
-                            title: Text(attData['qrdata']['sn'].toString(),
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold)),
-                            subtitle: Text(
-                                'Lecture Date: ' +
-                                    attData['qrdata']['date'] +
-                                    '\n' +
-                                    'Scan time: ' +
-                                    DateFormat('hh:mm:ss a').format(
-                                        DateTime.parse(attData['scantime'])),
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: 15)),
-                            trailing: Icon(Icons.cloud_upload_rounded,
-                                color: Colors.white),
-                          );
+                          return SavedAttendance(attData: attData);
                         },
                       ),
               ),
@@ -281,6 +257,148 @@ class _DashboardState extends State<Dashboard> {
         )
       ]),
       // bottomNavigationBar: CustomBottomNav(),
+    );
+  }
+}
+
+class SavedAttendance extends StatefulWidget {
+  SavedAttendance({
+    Key key,
+    @required this.attData,
+  }) : super(key: key);
+
+  final attData;
+
+  @override
+  _SavedAttendanceState createState() => _SavedAttendanceState();
+}
+
+class _SavedAttendanceState extends State<SavedAttendance> {
+  dynamic attData = {};
+  bool uploading = false;
+  bool uploaded = false;
+  Network api = new Network();
+
+  @override
+  void initState() {
+    attData = widget.attData;
+    super.initState();
+  }
+
+  _uploadAtt() async {
+    var connectivityResult = await (Connectivity().checkConnectivity());
+    if (connectivityResult == ConnectivityResult.mobile ||
+        connectivityResult == ConnectivityResult.wifi) {
+      print('has connection');
+      var response =
+          await api.authData({"attData": attData}, 'api/v1/student/submit');
+      print('reponse: $response');
+      if (response == null) {
+        Fluttertoast.showToast(
+            msg: 'Could not connect to ASW Server',
+            toastLength: Toast.LENGTH_LONG);
+        setState(() {
+          uploading = false;
+        });
+        return;
+      }
+      try {
+        var data = jsonDecode(response);
+        if (data['success']) {
+          Fluttertoast.showToast(
+              msg: 'Success: ' + data['attendance'].toString());
+          setState(() {
+            uploading = false;
+            uploaded = true;
+          });
+          print('updating attendance data in storage');
+          SharedPreferences localStorage =
+              await SharedPreferences.getInstance();
+          if (localStorage.getString('attendances') != null) {
+            var attendanceArray =
+                json.decode(localStorage.getString('attendances'));
+            print('attendance is: ' + attendanceArray.toString());
+            int index = 0;
+            for (int i = 0; i < attendanceArray.length; i++) {
+              var storedAtt = json.decode(attendanceArray[i]);
+              if (storedAtt['qrdata']['lid'].toString() ==
+                  attData['qrdata']['lid'].toString()) {
+                print('found match: ' + attData['qrdata']['lid'].toString());
+                break;
+              }
+              index++;
+            }
+            attendanceArray.removeAt(index);
+            localStorage.setString('attendances', json.encode(attendanceArray));
+            print(
+                'after removing attendance is: ' + attendanceArray.toString());
+          } else {
+            print('attendance is null');
+          }
+        } else {
+          Fluttertoast.showToast(msg: 'Failed:' + data);
+        }
+      } on Exception catch (e) {
+        Fluttertoast.showToast(
+            msg: 'Something went wrong: $e', toastLength: Toast.LENGTH_LONG);
+      }
+      setState(() {
+        uploading = false;
+      });
+    } else {
+      print('none');
+      setState(() {
+        uploading = false;
+      });
+      Fluttertoast.showToast(
+          msg: 'Please make sure you have Internet first',
+          toastLength: Toast.LENGTH_LONG);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      tileColor: Colors.blueAccent,
+      leading: Icon(Icons.check, color: Colors.white, size: 35),
+      contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+      // isThreeLine: true,
+      // visualDensity: VisualDensity(horizontal: 2, vertical: 3),
+      dense: false,
+      title: Text(widget.attData['qrdata']['sn'].toString(),
+          style: TextStyle(
+              color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
+      subtitle: Text(
+          'Lecture Date: ' +
+              widget.attData['qrdata']['date'] +
+              '\n' +
+              'Scan time: ' +
+              DateFormat('hh:mm:ss a')
+                  .format(DateTime.parse(widget.attData['scantime'])),
+          style: TextStyle(color: Colors.white, fontSize: 15)),
+      trailing: IconButton(
+          icon: uploaded
+              ? Icon(Icons.cloud_done)
+              : !uploading
+                  ? Icon(Icons.cloud_upload, color: Colors.white)
+                  : FittedBox(
+                      fit: BoxFit.fill,
+                      child: SpinKitFadingCircle(color: Colors.white)),
+          onPressed: () async {
+            print("upload");
+            if (uploaded) return;
+            if (!uploading) {
+              setState(() {
+                uploading = true;
+              });
+
+              await _uploadAtt();
+            } else {
+              setState(() {
+                uploading = false;
+              });
+            }
+          }),
     );
   }
 }

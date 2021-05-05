@@ -151,7 +151,9 @@ class _ScannedState extends State<Scanned> {
               SizedBox(height: 20),
               !goodqr
                   ? Text(
-                      'Could not read QR code for lecture information. This QR code was probably not generated from ASW',
+                      'Could not read QR code for lecture information. This QR code was probably not generated from ASW\nFound data in QR code: \"' +
+                          data['qrcode'] +
+                          "\"",
                       style: TextStyle(color: Colors.white))
                   : ListTile(
                       tileColor: Colors.blueAccent,
