@@ -177,6 +177,38 @@ class _DashboardState extends State<Dashboard> {
                                           [0]['sectionname'];
                                       var sectiontimes = data['sections'][index]
                                           [0]['sectiontimes'];
+                                      String sectiontimestxt = "";
+                                      if (sectiontimes.length == 1) {
+                                        sectiontimestxt = '[' +
+                                            sectiontimes[0]['classtype'] +
+                                            '] ' +
+                                            ' ' +
+                                            sectiontimes[0]['starttime'] +
+                                            ' - ' +
+                                            sectiontimes[0]['endtime'] +
+                                            ' at ' +
+                                            sectiontimes[0]['room'];
+                                      } else if (sectiontimes.length == 2) {
+                                        sectiontimestxt = '[' +
+                                            sectiontimes[0]['classtype'] +
+                                            '] ' +
+                                            ' ' +
+                                            sectiontimes[0]['starttime'] +
+                                            ' - ' +
+                                            sectiontimes[0]['endtime'] +
+                                            ' at ' +
+                                            sectiontimes[0]['room'] +
+                                            '\n' +
+                                            '[' +
+                                            sectiontimes[1]['classtype'] +
+                                            '] ' +
+                                            ' ' +
+                                            sectiontimes[1]['starttime'] +
+                                            ' - ' +
+                                            sectiontimes[1]['endtime'] +
+                                            ' at ' +
+                                            sectiontimes[1]['room'];
+                                      }
                                       return Padding(
                                         padding: const EdgeInsets.symmetric(
                                             vertical: 10),
@@ -191,33 +223,12 @@ class _DashboardState extends State<Dashboard> {
                                                   color: Colors.white,
                                                   fontSize: 20)),
                                           subtitle: FittedBox(
-                                            fit: BoxFit.fitWidth,
-                                            child: Text(
-                                                '[' +
-                                                    sectiontimes[0]
-                                                        ['classtype'] +
-                                                    '] ' +
-                                                    ' ' +
-                                                    sectiontimes[0]
-                                                        ['starttime'] +
-                                                    ' - ' +
-                                                    sectiontimes[0]['endtime'] +
-                                                    ' at ' +
-                                                    sectiontimes[0]['room'] +
-                                                    '\n' +
-                                                    '[' +
-                                                    sectiontimes[1]
-                                                        ['classtype'] +
-                                                    '] ' +
-                                                    ' ' +
-                                                    sectiontimes[1]
-                                                        ['starttime'] +
-                                                    ' - ' +
-                                                    sectiontimes[1]['endtime'] +
-                                                    ' at ' +
-                                                    sectiontimes[1]['room'],
+                                            fit: BoxFit.scaleDown,
+                                            alignment: Alignment.centerLeft,
+                                            child: Text(sectiontimestxt,
                                                 style: TextStyle(
-                                                    color: Colors.white)),
+                                                    color: Colors.white,
+                                                    fontSize: 15)),
                                           ),
                                         ),
                                       );
